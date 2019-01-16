@@ -16,7 +16,7 @@ card_name_dict = ["7s", "5p", "5s", "5z", "6m",
 for x in range(0, 647, 81):
     for y in range(0, 649, 130):
         # x0 y0 x1 y1
-        region = (x, y, x + 80, y + 129)
+        region = (x, y + 7, x + 80, y + 122)
         crop_img = img.crop(region)
         card_name = card_name_dict[count]
         if card_name != "":

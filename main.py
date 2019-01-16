@@ -5,7 +5,7 @@ import time
 import os
 
 
-def convert(card_img):
+def convert_image_to_hash(card_img):
     binary = crop_to_bin(card_img)
     hash = binary_to_hash(binary)
     # print(hash)
@@ -17,7 +17,7 @@ def create_dict():
     for root, dirs, files in os.walk("bin"):
         file_names = files
     for file_name in file_names:
-        hash = convert(Image.open("bin/" + file_name))
+        hash = convert_image_to_hash(Image.open("bin/" + file_name))
         hash_dict[file_name[:-4]] = hash
     return hash_dict
 
@@ -33,7 +33,9 @@ def judge_card_with_hash(hash_dict, hash):
         dist = hamming_distance_with_hash(hash, hash_dict[card_name])
         # print("%s, %d" % (card_name, dist))
         dist_dict[card_name] = dist
-    return min(dist_dict, key=dist_dict.get)
+    name = min(dist_dict, key=dist_dict.get)
+    sim = dist_dict[name]
+    return name, sim
 
 
 def card_sequence_to_link(sequence):
@@ -43,21 +45,24 @@ def card_sequence_to_link(sequence):
     return link
 
 
-def grab():
-    hash_dict = create_dict()
-    time.sleep(3)
+def shot_and_judge(hash_dict):
     cards = card_shot()
-    count = 0
     card_names = []
-    for card in cards:
+    sims = []
+    threshold = 60
+    count = 0
+    while count < 28:
+        card = cards[count]
         card.save("test\%s.png" % str(count))
-        count = count + 1
-        hash = convert(card)
-        card_names.append(judge_card_with_hash(hash_dict, hash))
-    return card_names
-
-
-names = grab()
-link = card_sequence_to_link(names)
-print(link)
-/x
+        hash = convert_image_to_hash(card)
+        name, sim = judge_card_with_hash(hash_dict, hash)
+        if sim < threshold:
+            card_names.append(name)
+            sims.append(sim)
+            if count < 14:
+                count = count + 1
+            else:
+                break
+        else:
+            count = count + 14
+    return card_names, sims

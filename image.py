@@ -32,7 +32,7 @@ def binary_to_hash(bin_img):
 def crop_to_bin(crop):
     gray_img = image_gray(crop)
     resize_width = 16
-    resize_height = 26
+    resize_height = 23
     smaller_image = gray_img.resize((resize_width, resize_height))
     threshold = calculate_average_gray(smaller_image)
     binary = image_binary(smaller_image, threshold)
