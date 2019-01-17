@@ -38,7 +38,7 @@ def calculate():
 
         sim_label['text'] = str(sims)
 
-        state = web_page.split("<div id=\"tehai\" align=\"center\">")[1].split("<br>")[0]
+        state = web_page.split("<div id=\"tehai\" align=\"center\">")[1].split("<br />")[0]
         state_label['text'] = state
 
         split_page = web_page.split(cards)
@@ -47,7 +47,8 @@ def calculate():
 
         win.update()
 
+    win.after(1000, calculate)
 
+win.after(1000, calculate)
 tkinter.Button(win, text="计算", command=calculate).pack()
 win.mainloop()
-web_close(driver)
